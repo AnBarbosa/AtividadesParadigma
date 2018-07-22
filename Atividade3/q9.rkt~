@@ -1,0 +1,52 @@
+#lang racket
+
+(require math/number-theory)
+(require srfi/1)
+
+
+(define (compare-heads? p1 p2) (= (car p1) (car p2)))
+
+
+(define (list-of-heads lista) 
+               ; (println lista)
+               ; (println (map car lista))
+                (map car lista))
+
+(define (multiplica-elementos-na-lista lst) (if (list? lst) (foldl * 1 lst) lst))
+
+
+(define (mdc-custoso x y)
+    (let ([fatores-x (factorize x)] [fatores-y (factorize y)])
+        (multiplica-elementos-na-lista 
+                                        (list-of-heads 
+                                                (lset-intersection compare-heads? fatores-x fatores-y)))))
+
+
+(define (mdc-economico x y)
+    (multiplica-elementos-na-lista (lista-primos-comuns x y)))
+
+(define (lista-primos-comuns x y)
+    (cond [(> x y) (primos-divisores-comuns x y (list-of-heads(factorize x)) '())]
+          [else (primos-divisores-comuns x y (list-of-heads(factorize y)) '() )]))
+
+
+(define (proximo-primo p-list) (if (pair? p-list) (car p-list) p-list))
+(define (resto-da-lista-de-primos plist) (if (pair? plist) cdr plist) plist)
+
+(define (primos-divisores-comuns x y lista-de-primos lista-divisores)
+    ( let ([primo (proximo-primo lista-de-primos)])
+     (cond [ (or (> primo x) (> primo y)) lista-divisores]
+           [(and (modulo x primo) (modulo y primo)) 
+                                                    (primos-divisores-comuns 
+                                                    x 
+                                                    y 
+                                                    (resto-da-lista-de-primos lista-de-primos) 
+                                                    (cons primo lista-divisores)) ]
+           [else '(1 2 3 5 7) ])))
+ 
+
+
+(println (mdc-economico 13 27))
+(println (mdc-economico 6 60))
+(println (mdc-economico 70 98))
+
