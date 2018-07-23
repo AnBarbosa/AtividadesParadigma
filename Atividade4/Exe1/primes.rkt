@@ -6,7 +6,7 @@
 (provide gen-primes-b)
 (provide gen-primes)
 (provide factorize)
-
+(provide divides)
 (require racket/trace)
 
 (define (divides a b)
